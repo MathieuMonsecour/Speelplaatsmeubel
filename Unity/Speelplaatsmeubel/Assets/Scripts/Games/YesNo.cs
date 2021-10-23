@@ -5,22 +5,17 @@ using UnityEngine.UI;
 
 public class YesNo : MonoBehaviour
 {
-    public string[] questions = new string[3];
-    public bool[] question_answers = new bool[3];
+    public string[] questions = new string[4];
+    public bool[] question_answers = new bool[4];
+    private int questionCount = 0;
 
-    public GameObject display_text;
-    public GameObject display;
+    public Text display_text;
     public GameObject redBall;
     public GameObject greenBall;
+    public Controller controller;
+    public Camera cam;
 
     void Start(){
-        display_text.GetComponent<UnityEngine.UI.Text>().text = "123";
-        foreach(string i in questions){
-            Debug.Log(i);
-        }
-    }
-
-    void Update(){
         float width = Camera.main.orthographicSize * 2.0f * Screen.width / Screen.height;
         float height = width/Screen.width*Screen.height;
         
@@ -36,8 +31,48 @@ public class YesNo : MonoBehaviour
         greenBall.transform.localScale = new Vector3(absoluteSize, absoluteSize, absoluteSize);
         greenBall.transform.position = new Vector3(absoluteSize*2, 0f, greenBall.transform.position.z);
 
-        // Display
-        display.transform.position = new Vector3(Screen.width/2f, Screen.height/2f, display.transform.position.z);
-        display.GetComponent<RectTransform>().sizeDelta = new Vector2(maskSize, maskSize);
+        display_text.text = questions[questionCount];
+
+        lastAction = Time.time;
+
+        greenBall.SetActive(false);
+        redBall.SetActive(false);
+    }
+
+    private float lastAction;
+    private float pressingRate = 1f;
+    public void delegateMessage(string msg){
+        if(Time.time - lastAction >= pressingRate){
+            if(msg[0] == '1' && msg[1] == '0'){
+                if(question_answers[questionCount] == false){
+                    questionCount = Mathf.Min(questionCount + 1, questions.Length-1);
+                    cam.backgroundColor = Color.green;
+                }
+                else{
+                    controller.sendString("F");
+                    cam.backgroundColor = Color.red;
+                }
+                lastAction = Time.time;
+                
+            }
+            else if(msg[0] == '0' && msg[1] == '1'){
+                if(question_answers[questionCount] == true){
+                    questionCount = Mathf.Min(questionCount + 1, questions.Length-1);
+                    cam.backgroundColor = Color.green;
+                }
+                else{
+                    controller.sendString("F");
+                    cam.backgroundColor = Color.red;
+                }
+                lastAction = Time.time;
+            }
+        }
+    }
+
+    void Update(){
+        if(Time.time - lastAction >= pressingRate){
+            cam.backgroundColor = Color.black;
+            display_text.text = questions[questionCount];
+        }
     }
 }

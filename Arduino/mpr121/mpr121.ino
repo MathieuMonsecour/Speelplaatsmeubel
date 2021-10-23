@@ -6,6 +6,8 @@ boolean touchStates[12]; //to keep track of the previous touch states
 
 int piezoPin = 8;
 
+char received = ' ';
+
 void setup(){
   pinMode(irqpin, INPUT);
   digitalWrite(irqpin, HIGH); //enable pullup resistor
@@ -18,8 +20,26 @@ void setup(){
 
 void loop(){
   readTouchInputs();
+  char C = ' ';
+  if (Serial.available() > 0)
+  {
+    Serial.flush();
+    
+    while (Serial.available() > 0)
+    {
+      C = Serial.read();
+      Serial.flush(); //this is a must for the arduino to wait untill Serial.write is done
+    }
+  }
+
+  delay(100);
+  if(C == "F"){
+    tone(piezoPin, 800, 200);
+    C = ' ';
+  }
 }
 
+bool boolList[]={false, false,false, false,false, false,false, false,false, false,false, false};
 
 void readTouchInputs(){
   if(!checkInterrupt()){
@@ -32,21 +52,15 @@ void readTouchInputs(){
     
     uint16_t touched = ((MSB << 8) | LSB); //16bits that make up the touch states
 
+    bool changes = false;
     
     for (int i=0; i < 12; i++){  // Check what electrodes were pressed
       if(touched & (1<<i)){
       
         if(touchStates[i] == 0){
-          //pin i was just touched
-          Serial.print("pin ");
-          Serial.print(i);
-          Serial.println(" was just touched");
-          if(i == 0){
-            tone(piezoPin, 800, 300);
-          }
-          else if(i == 1){
-            tone(piezoPin, 1500, 300);
-          }
+          //tone(piezoPin, 800+i*100, 50);
+          changes = true;
+          boolList[i] = true;
         
         }else if(touchStates[i] == 1){
           //pin i is still being touched
@@ -55,9 +69,8 @@ void readTouchInputs(){
         touchStates[i] = 1;      
       }else{
         if(touchStates[i] == 1){
-          Serial.print("pin ");
-          Serial.print(i);
-          Serial.println(" is no longer being touched");
+          changes = true;
+          boolList[i] = false;
           
           //pin i is no longer being touched
        }
@@ -66,7 +79,17 @@ void readTouchInputs(){
       }
     
     }
-    
+    if(changes){
+      String boolToText = "";
+      for (int i=0; i < 12; i++){
+        String sign = "0";
+        if(boolList[i]){
+          sign = "1";
+        }
+        boolToText = boolToText + sign;
+      }
+      Serial.println(boolToText);
+    }
   }
 }
 
