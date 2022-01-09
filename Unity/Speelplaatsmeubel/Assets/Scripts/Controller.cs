@@ -4,14 +4,15 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using ArduinoSerialAPI;
+using UnityEngine.SceneManagement;
 
 public class Controller : MonoBehaviour
 {
-    public YesNo YesNo;
+	public SimonSays game;
 
     SerialHelper helper;
     public GameObject display;
-	public Text display_text;
+	public Text control_display;
 
 	public GameObject connect;
 	public GameObject disconnect;
@@ -26,8 +27,10 @@ public class Controller : MonoBehaviour
         float maskSize = Screen.width*sizePercentage;        
 
         // Display
-        display.GetComponent<RectTransform>().sizeDelta = new Vector2(maskSize*5, maskSize*2);
-        display.transform.position = new Vector3(Screen.width/2f, Screen.height/2f, display.transform.position.z);
+		float display_width = maskSize*1.5f;
+		float display_height = maskSize/2.0f;
+        display.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
+        display.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height/2.0f, display.transform.position.z);
 
         // buttons
         connect.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, maskSize);
@@ -36,30 +39,30 @@ public class Controller : MonoBehaviour
         disconnect.transform.position = new Vector3(Screen.width/2, maskSize/2, disconnect.transform.position.z);
 
 		try{
-			helper = SerialHelper.CreateInstance("COM10");
+			helper = SerialHelper.CreateInstance("COM5");
 			helper.setTerminatorBasedStream("\n");
 			// helper.setLengthBasedStream();
 
 			helper.OnConnected +=  () => {
-				Debug.Log("Connected");
-				//display_text.text = "Connected";
+				Debug.Log("Connected ");
+				control_display.text = "Connected";
 			};
 
 			helper.OnConnectionFailed += () => {
 				//Debug.Log("Failed");
-				//display_text.text = "failed";
+				control_display.text = "Connection failed";
 			};
 
 			helper.OnDataReceived += () => {
                 String temp = helper.Read();
                 Debug.Log(temp);
-                YesNo.delegateMessage(temp);
+                game.delegateMessage(temp);
 			};
 
 			helper.Connect();
 			
 		}catch(Exception ex){
-			display_text.text = ex.Message;
+			control_display.text = ex.Message;
 		}        
     }
 
@@ -81,6 +84,7 @@ public class Controller : MonoBehaviour
 	}
 	public void disconnectButton(){
 		helper.Disconnect ();
+		control_display.text = "Disconnected";
 	}
 	void OnDestroy()
 	{

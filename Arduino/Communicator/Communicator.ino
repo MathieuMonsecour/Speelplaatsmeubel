@@ -1,10 +1,16 @@
 #include "mpr121.h"
 #include <Wire.h>
 
+// 3.3V -> 3.3V
+// IRQ -> D2
+// SCL -> A5
+// SDA -> A4
+// GND -> GND
+
 int irqpin = 2;  // Digital 2
 boolean touchStates[12]; //to keep track of the previous touch states
 
-int piezoPin = 8;
+//int piezoPin = 8;
 
 char received = ' ';
 
@@ -32,9 +38,9 @@ void loop(){
     }
   }
 
-  delay(100);
+  
   if(C != ' '){
-    tone(piezoPin, 800, 200);
+    //tone(piezoPin, 800, 200);
     C = ' ';
   }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class YesNo : MonoBehaviour
+public class Quiz: MonoBehaviour
 {
     public string[] questions = new string[4];
     public bool[] question_answers = new bool[4];
