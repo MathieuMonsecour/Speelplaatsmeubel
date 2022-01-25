@@ -39,7 +39,7 @@ public class Controller : MonoBehaviour
         disconnect.transform.position = new Vector3(Screen.width/2, maskSize/2, disconnect.transform.position.z);
 
 		try{
-			helper = SerialHelper.CreateInstance("COM5");
+			helper = SerialHelper.CreateInstance("COM15");
 			helper.setTerminatorBasedStream("\n");
 			// helper.setLengthBasedStream();
 
