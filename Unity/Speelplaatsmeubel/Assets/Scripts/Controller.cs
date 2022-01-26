@@ -39,7 +39,12 @@ public class Controller : MonoBehaviour
         disconnect.transform.position = new Vector3(Screen.width/2, maskSize/2, disconnect.transform.position.z);
 
 		try{
-			helper = SerialHelper.CreateInstance("COM15");
+			if(Application.platform.ToString().ToLower().Contains("droid")){
+				helper = SerialHelper.CreateInstance("");
+			}
+			else if(Application.platform.ToString().ToLower().Contains("windows")){
+				helper = SerialHelper.CreateInstance("COM15"); 
+			}
 			helper.setTerminatorBasedStream("\n");
 			// helper.setLengthBasedStream();
 
@@ -73,9 +78,11 @@ public class Controller : MonoBehaviour
 
 		if(!helper.isConnected()){
 		    connect.SetActive(true);
+			game.setConnection(false);
         }
 		else if(helper.isConnected()){
 		    disconnect.SetActive(true);
+			game.setConnection(true);
 		}
 	}
 

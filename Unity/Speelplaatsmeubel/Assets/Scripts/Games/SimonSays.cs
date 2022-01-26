@@ -28,6 +28,8 @@ public class SimonSays: MonoBehaviour
 
     private int highestScore = 0;
 
+    private bool isConnected = false;
+
     void Start(){
         float width = Camera.main.orthographicSize * 2.0f * Screen.width / Screen.height;
         float height = width/Screen.width*Screen.height;
@@ -64,6 +66,8 @@ public class SimonSays: MonoBehaviour
         startButton.transform.position = new Vector3(Screen.width/2, Screen.height - start_game_height/2, startButton.transform.position.z);
         
         cam.backgroundColor = Color.black;
+        
+        startButton.SetActive(false);
     }
 
     public void delegateMessage(string msg){
@@ -109,13 +113,18 @@ public class SimonSays: MonoBehaviour
         StartCoroutine(nextExercise());
     }
 
-private void increaseDifficulty(){
-    currentAnswer = 0;
-    nbOfItems += 1;
-    itemSpeed = Mathf.Max(itemSpeed*increaseSpeedFactor, minimumSpeed);
-    listening = false;
-    StartCoroutine(nextExercise());
-}
+    private void increaseDifficulty(){
+        currentAnswer = 0;
+        nbOfItems += 1;
+        itemSpeed = Mathf.Max(itemSpeed*increaseSpeedFactor, minimumSpeed);
+        listening = false;
+        StartCoroutine(nextExercise());
+    }
+
+    public void setConnection(bool c){
+        isConnected = c;
+        startButton.SetActive(isConnected);
+    }
 
 IEnumerator nextExercise()
 {   
