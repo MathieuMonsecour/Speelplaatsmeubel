@@ -17,6 +17,8 @@ public class Controller : MonoBehaviour
 	public GameObject connect;
 	public GameObject disconnect;
 
+	public GameObject homeButton;
+
     void Start()
     {	
         float width = Camera.main.orthographicSize * 2.0f * Screen.width / Screen.height;
@@ -32,11 +34,15 @@ public class Controller : MonoBehaviour
         display.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
         display.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height/2.0f, display.transform.position.z);
 
-        // buttons
-        connect.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, maskSize);
-        disconnect.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, maskSize);
-        connect.transform.position = new Vector3(Screen.width/2, maskSize/2, disconnect.transform.position.z);
-        disconnect.transform.position = new Vector3(Screen.width/2, maskSize/2, disconnect.transform.position.z);
+		// homeButton
+		homeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
+        homeButton.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*2f, homeButton.transform.position.z);
+
+        // (dis)connect buttons
+        connect.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
+        disconnect.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
+        connect.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*3.5f, homeButton.transform.position.z);
+        disconnect.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*3.5f, homeButton.transform.position.z);
 
 		try{
 			if(Application.platform.ToString().ToLower().Contains("droid")){
@@ -84,6 +90,10 @@ public class Controller : MonoBehaviour
 		    disconnect.SetActive(true);
 			game.setConnection(true);
 		}
+	}
+
+	public void openMainMenu(){
+		SceneManager.LoadScene (sceneName:"MainMenu");
 	}
 
 	public void connectButton(){

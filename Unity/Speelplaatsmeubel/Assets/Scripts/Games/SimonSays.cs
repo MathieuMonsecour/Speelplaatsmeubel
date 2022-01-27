@@ -34,12 +34,12 @@ public class SimonSays: MonoBehaviour
         float width = Camera.main.orthographicSize * 2.0f * Screen.width / Screen.height;
         float height = width/Screen.width*Screen.height;
         
-        float sizePercentage = 0.05f;
+        float sizePercentage = 0.07f;
         absoluteSize = width*sizePercentage;
         float maskSize = Screen.width*sizePercentage;
 
         float startX = -2*absoluteSize;
-        float startY = 3*absoluteSize;
+        float startY = 2*absoluteSize;
 
         // Display
 		float display_width = maskSize*3f;
