@@ -18,31 +18,40 @@ public class Controller : MonoBehaviour
 	public GameObject disconnect;
 
 	public GameObject homeButton;
+    public GameObject menuBackground;
+
+	public static float menuWidth = 0;
 
     void Start()
     {	
         float width = Camera.main.orthographicSize * 2.0f * Screen.width / Screen.height;
         float height = width/Screen.width*Screen.height;
         
-        float sizePercentage = 0.1f;
-        float absoluteSize = width*sizePercentage;
+        float sizePercentage = 0.15f;
         float maskSize = Screen.width*sizePercentage;        
 
         // Display
-		float display_width = maskSize*1.5f;
-		float display_height = maskSize/2.0f;
+		float display_width = maskSize;
+		float display_height = maskSize/2f;
         display.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
-        display.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height/2.0f, display.transform.position.z);
+        display.transform.position = new Vector3(display_width/2.0f, display_height/2.0f, display.transform.position.z);
 
 		// homeButton
 		homeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
-        homeButton.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*2f, homeButton.transform.position.z);
+        homeButton.transform.position = new Vector3(display_width/2.0f,Screen.height-display_height/2.0f, homeButton.transform.position.z);
 
         // (dis)connect buttons
         connect.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
         disconnect.GetComponent<RectTransform>().sizeDelta = new Vector2(display_width, display_height);
-        connect.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*3.5f, homeButton.transform.position.z);
-        disconnect.transform.position = new Vector3(display_width/2.0f, Screen.height-display_height*3.5f, homeButton.transform.position.z);
+        connect.transform.position = new Vector3(display_width/2.0f, display_height*2f, homeButton.transform.position.z);
+        disconnect.transform.position = new Vector3(display_width/2.0f, display_height*2f, homeButton.transform.position.z);
+
+		// menuBackground
+		float menuBackgroundWidth = width * display_width/Screen.width *2.05f;
+
+		menuWidth = menuBackgroundWidth/2f;
+		menuBackground.transform.localScale = new Vector3(menuBackgroundWidth, height*1.2f, 1f);
+		menuBackground.transform.position = new Vector3(-width/2f, 0f, 10f);
 
 		try{
 			if(Application.platform.ToString().ToLower().Contains("droid")){
@@ -66,7 +75,6 @@ public class Controller : MonoBehaviour
 
 			helper.OnDataReceived += () => {
                 String temp = helper.Read();
-                Debug.Log(temp);
                 game.delegateMessage(temp);
 			};
 
